@@ -197,7 +197,7 @@ func (m *PackageDependencyManager) Resolve(ctx context.Context, meta pkgmetav1.P
 		if lp.Name == pr.GetName() {
 			prExists = true
 
-			if lp.Version != self.Version || ptr.Deref(lp.ResolvedVersion, "") != ptr.Deref(self.ResolvedVersion, "") {
+			if lp.Version != self.Version || lp.ResolvedVersion != self.ResolvedVersion {
 				// Version was updated without creating a new revision (e.g., because
 				// there were no changes between two semvers). Update the lock to
 				// reflect which version is installed, in case other packages are
