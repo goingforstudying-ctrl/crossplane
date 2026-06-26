@@ -369,8 +369,14 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (reco
 					atIdx := strings.Index(source, "@sha256:")
 					if atIdx != -1 {
 						beforeDigest := source[:atIdx]
-						if colonIdx := strings.LastIndex(beforeDigest, ":"); colonIdx != -1 {
-							resolvedTag := beforeDigest[colonIdx+1:]
+						// Find the last "/" so we don't mistake a registry port for a tag separator.
+						lastSlash := strings.LastIndex(beforeDigest, "/")
+						searchStart := 0
+						if lastSlash != -1 {
+							searchStart = lastSlash + 1
+						}
+						if colonIdx := strings.LastIndex(beforeDigest[searchStart:], ":"); colonIdx != -1 {
+							resolvedTag := beforeDigest[searchStart:][colonIdx+1:]
 							if resolvedTag != "" {
 								installedVersion = resolvedTag
 							}
